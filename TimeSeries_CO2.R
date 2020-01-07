@@ -54,7 +54,18 @@ colnames(edgar_df_agg) <- c("Year", "Type", "CO2_Amount")
 # bind final dataframe from EDGAR and FAOSTAT 
 final_df_agg = rbind(edgar_df_agg, energy_agg)
 
-######## Connected Scatter Plot ############
+######## Connected Scatter Plots ############
+# Energy Use by Type
+energy_agg_type = aggregate(CO2_Amount ~ Year+Item, energy, sum)
+ggplot(energy_agg_type, aes(x = Year, y = CO2_Amount, color = Item, group = Item)) +
+  theme_minimal() + geom_point() + geom_line() +
+  ggtitle(expression("Agriculture Energy Use CO"[2]*" Emissions by Year, 1970 - 2012")) +
+  scale_x_continuous(name = "Year", breaks = seq(1970, 2012, 6)) +
+  scale_y_continuous(name = expression("Gt CO"[2]*" Emissions"),
+                     limits = c(0,0.41), breaks=seq(0,0.4,0.1)) +
+  scale_color_brewer(name = "Emissions Source", palette="Set2")
+
+# Total Emissions
 ggplot(final_df_agg, aes(x = Year, y = CO2_Amount, color = Type, group = Type)) +
   theme_minimal() + geom_point() + geom_line() +
   ggtitle(expression("Agriculture CO"[2]*" Emissions by Year, 1970 - 2018")) +
